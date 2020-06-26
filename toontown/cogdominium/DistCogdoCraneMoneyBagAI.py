@@ -13,7 +13,7 @@ class DistCogdoCraneMoneyBagAI(DistCogdoCraneObjectAI):
         self.index = index
         self.avoidHelmet = 0
         cn = CollisionNode('sphere')
-        cs = CollisionSphere(0, 0, 0, 6)
+        cs = CollisionSphere(0, 0, 0, 2)
         cn.addSolid(cs)
         self.attachNewNode(cn)
 

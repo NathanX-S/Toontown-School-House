@@ -12,7 +12,7 @@ class CogdoBoardroomGameSettings(Entity):
 class CogdoCraneGameSettings(Entity):
     type = 'cogdoCraneGameSettings'
     attribs = (('GameDuration', 120, 'float'),
-     ('EmptyFrictionCoef', 0.1, 'float'),
+     ('EmptyFrictionCoef', 0.2, 'float'),
      ('Gravity', -32, 'int'),
      ('RopeLinkMass', 1.0, 'float'),
      ('MagnetMass', 1.0, 'float'),

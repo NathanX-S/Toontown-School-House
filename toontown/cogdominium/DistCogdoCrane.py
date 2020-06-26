@@ -277,8 +277,9 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
         self.gripper.setPos(0, 0, -4)
         cn = CollisionNode('sniffer')
         self.sniffer = magnetModel.attachNewNode(cn)
+        self.sniffer.show()
         self.sniffer.stash()
-        cs = CollisionSphere(0, 0, -10, 6)
+        cs = CollisionBox(Point3(0,0,-15), 2, 2, 15)
         cs.setTangible(0)
         cn.addSolid(cs)
         cn.setIntoCollideMask(BitMask32(0))
@@ -619,7 +620,11 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
 
     def __sniffedSomething(self, entry):
         np = entry.getIntoNodePath()
-        doId = int(np.getNetTag('object'))
+        try:
+            doId = int(np.getNetTag('object'))
+        except ValueError as e:
+            print(e)
+            return
         obj = base.cr.doId2do.get(doId)
         if obj and obj.state != 'LocalDropped' and (obj.state != 'Dropped' or obj.craneId != self.doId):
             obj.d_requestGrab()

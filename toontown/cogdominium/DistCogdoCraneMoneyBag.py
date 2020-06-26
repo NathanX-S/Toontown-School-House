@@ -37,7 +37,7 @@ class DistCogdoCraneMoneyBag(DistCogdoCraneObject):
         shadowNode = self.find('**/MonetBagShadoww')
         shadowNode.reparentTo(self.shadow)
         self.collisionNode.setName('moneyBag')
-        cs = CollisionSphere(0, 0, 4, 4)
+        cs = CollisionSphere(0, 0, 0, 2)
         self.collisionNode.addSolid(cs)
         self.craneGame.moneyBags[self.index] = self
         self.setupPhysics('moneyBag')
