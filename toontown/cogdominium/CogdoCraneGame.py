@@ -26,7 +26,7 @@ class CogdoCraneGame(DirectObject):
         self.toonId2Player = {}
         self.players = []
         self.isGameComplete = False
-        self._hints = {'targettedByBags': False}
+        self._hints = {'targetedByBags': False}
 
     def placeEntranceElevator(self, elevator):
         elevator.setPos(-10.63, 0, 6.03)
