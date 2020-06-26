@@ -57,7 +57,7 @@ class DistCogdoGameAI(DistCogdoGameBase, DistributedObjectAI):
         return self.exteriorZone
 
     def getDroneCogDNA(self):
-        return self._interior.getDroneCogDNA()
+        raise NotImplementedError("getDroneCogDNA needs to be overriden in the subclass.")
 
     def getToonIds(self):
         toonIds = []

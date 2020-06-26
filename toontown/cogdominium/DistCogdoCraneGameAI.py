@@ -135,3 +135,8 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
     def _finishDoneDL(self, task):
         self.announceGameDone()
         return task.done
+
+    def getDroneCogDNA(self):
+        dna = SuitDNA()
+        dna.newSuitRandom(level = random.randint(1, 3))
+        return dna

@@ -25,14 +25,12 @@ class DistCogdoCraneCog(Suit, DistributedObject):
 
     def _startMoveIval(self, entranceId, startT):
         self._stopMoveIval()
-        unitVecs = (Vec3(1, 0, 0),
-         Vec3(0, 1, 0),
-         Vec3(-1, 0, 0),
-         Vec3(0, -1, 0))
-        machineDistance = 4
-        entranceDistance = 60
-        startPos = unitVecs[entranceId] * entranceDistance
-        endPos = unitVecs[entranceId] * machineDistance
+        unitVecs = (Vec3(45, 0, 6.038),
+         Vec3(0, 45, 6.038),
+         Vec3(-45, 0, 6.038),
+         Vec3(0, -45, 6.038))
+        startPos = unitVecs[entranceId]
+        endPos = Vec3(0, 0, 6.038)
         walkDur = (endPos - startPos).length() / Globals.CogSettings.CogWalkSpeed.get()
         sceneRoot = self.getGame().game.getSceneRoot()
         moveIval = IG.Sequence(IG.Func(self.reparentTo, sceneRoot), IG.Func(self.setPos, startPos),

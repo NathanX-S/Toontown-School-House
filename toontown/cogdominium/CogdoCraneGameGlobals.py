@@ -30,8 +30,9 @@ SfxFiles = {'getMemo': 'phase_4/audio/sfx/MG_maze_pickup.ogg',
             'stomperSfx': 'phase_9/audio/sfx/CHQ_FACT_stomper_large.ogg',
             'caughtSfx': 'phase_11/audio/sfx/LB_camera_shutter_2.ogg',
             'cycleSfx': 'phase_11/audio/sfx/LB_laser_beam_on_2.ogg'}
+ModelFiles = {'stompOMatic': 'phase_5/models/cogdominium/tt_m_ara_ccg_stompOMatic'}
 LevelFilePath = 'phase_5/models/cogdominium/CBFOVault'
-GameDuration = 180
+GameDuration = 120
 CranePosHprs = [(13.4 - 36.874, -136.6 + 113.682, 6, -45, 0, 0),
                 (13.4 - 36.874, -91.4 + 113.682, 6, -135, 0, 0),
                 (58.6 - 36.874, -91.4 + 113.682, 6, 135, 0, 0),

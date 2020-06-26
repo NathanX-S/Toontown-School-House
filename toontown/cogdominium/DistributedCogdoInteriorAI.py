@@ -297,11 +297,6 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
             sendIds,
             0]
 
-    def getDroneCogDNA(self):
-        dna = SuitDNA()
-        dna.newSuitRandom(level = 2)
-        return dna
-
     def d_setSuits(self):
         self.sendUpdate('setSuits', self.getSuits())
 

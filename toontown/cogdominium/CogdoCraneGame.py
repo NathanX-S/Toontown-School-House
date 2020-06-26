@@ -75,6 +75,9 @@ class CogdoCraneGame(DirectObject):
         planeNode.addSolid(plane)
         planeNode.setCollideMask(ToontownGlobals.PieBitmask)
         self.geomRoot.attachNewNode(planeNode)
+        self.stompOMatic = loader.loadModel(Globals.ModelFiles['stompOMatic'])
+        self.stompOMatic.reparentTo(self.level)
+        self.stompOMatic.setZ(6.038)
         self.guiMgr = CogdoCraneGuiManager(self.geomRoot)
 
     def getSceneRoot(self):
