@@ -81,10 +81,7 @@ class DistCogdoGame(DistCogdoGameBase, DistributedObject):
         return len(self.getToonIds())
 
     def isSinglePlayer(self):
-        if self.getNumPlayers() == 1:
-            return 1
-        else:
-            return 0
+        return self.getNumPlayers() == 1
 
     def announceGenerate(self):
         DistributedObject.announceGenerate(self)
