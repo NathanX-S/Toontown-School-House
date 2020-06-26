@@ -1587,7 +1587,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         if not self.isStunned:
             self.squish(damage)
             self.d_squish(damage)
-            self.playDialogueForString('!')
+            self.playDialogue('exclamation', 1)
 
     def getShadowJoint(self):
         return Toon.Toon.getShadowJoint(self)
@@ -2186,11 +2186,11 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
             sfxIndex = 5
         else:
             self.notify.error('unrecognized dialogue type: ', type)
-        if sfxIndex != None and sfxIndex < len(dialogueArray) and dialogueArray[sfxIndex] != None:
-            soundSequence = Sequence(Wait(delay), SoundInterval(dialogueArray[sfxIndex], node=None, listenerNode=base.localAvatar, loop=0, volume=1.0))
+        if sfxIndex != None and len(dialogueArray) > sfxIndex:
+            soundSequence = Sequence(Wait(delay), Func(base.playSfx, dialogueArray[sfxIndex], 0, 1, 1.0, 0, self))
+            self.cleanUpSoundList()
             self.soundSequenceList.append(soundSequence)
             soundSequence.start()
-            self.cleanUpSoundList()
         return
 
     def cleanUpSoundList(self):
