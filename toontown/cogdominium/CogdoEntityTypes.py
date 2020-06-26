@@ -22,7 +22,5 @@ class CogdoCraneGameSettings(Entity):
 class CogdoCraneCogSettings(Entity):
     type = 'cogdoCraneCogSettings'
     attribs = (('CogSpawnPeriod', 10.0, 'float'),
-     ('CogWalkSpeed', 3.0, 'float'),
-     ('CogMachineInteractDuration', 2.0, 'float'),
-     ('CogFlyAwayHeight', 100.0, 'float'),
-     ('CogFlyAwayDuration', 4.0, 'float'))
+     ('CogWalkSpeed', 2.0, 'float'),
+     ('CogMachineInteractDuration', 2.0, 'float'))

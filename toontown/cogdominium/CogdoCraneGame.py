@@ -79,6 +79,7 @@ class CogdoCraneGame(DirectObject):
         self.stompOMatic.reparentTo(self.level)
         self.stompOMatic.setZ(6.038)
         self.guiMgr = CogdoCraneGuiManager(self.geomRoot)
+        self.coinSfx = self.audioMgr.createSfx('coinSfx')
 
     def getSceneRoot(self):
         return self.sceneRoot

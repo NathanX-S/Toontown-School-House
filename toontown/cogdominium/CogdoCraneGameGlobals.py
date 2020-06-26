@@ -29,7 +29,8 @@ SfxFiles = {'getMemo': 'phase_4/audio/sfx/MG_maze_pickup.ogg',
             'destroySfx': 'phase_11/audio/sfx/LB_evidence_miss.ogg',
             'stomperSfx': 'phase_9/audio/sfx/CHQ_FACT_stomper_large.ogg',
             'caughtSfx': 'phase_11/audio/sfx/LB_camera_shutter_2.ogg',
-            'cycleSfx': 'phase_11/audio/sfx/LB_laser_beam_on_2.ogg'}
+            'cycleSfx': 'phase_11/audio/sfx/LB_laser_beam_on_2.ogg',
+            'coinSfx': 'phase_5/audio/sfx/tt_s_ara_cbg_stompCoin.ogg'}
 ModelFiles = {'stompOMatic': 'phase_5/models/cogdominium/tt_m_ara_ccg_stompOMatic'}
 LevelFilePath = 'phase_5/models/cogdominium/CBFOVault'
 GameDuration = 120

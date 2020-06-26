@@ -40,7 +40,7 @@ class DistCogdoCraneCog(DistributedSuit):
         moveIval = IG.Sequence(IG.Func(self.reparentTo, sceneRoot), IG.Func(self.setPos, startPos),
                                IG.Func(self.lookAt, game.stompOMatic), IG.Func(self.loop, 'walk'),
                                IG.LerpPosInterval(self, walkDur, endPos, startPos=startPos))
-        interactIval = IG.Sequence(IG.ActorInterval(self, 'pickpocket'),
+        interactIval = IG.Sequence(IG.Func(game.coinSfx.play), IG.ActorInterval(self, 'pickpocket'),
                                    IG.Wait(Globals.CogSettings.CogMachineInteractDuration.get()))
         flyIval = self.beginSupaFlyMove(endPos, 0, 'flyAway')
         self._moveIval = IG.Sequence(moveIval, interactIval, flyIval, IG.Wait(5))
