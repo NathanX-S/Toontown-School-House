@@ -12,6 +12,7 @@ class CogdoBoardroomGameSettings(Entity):
 class CogdoCraneGameSettings(Entity):
     type = 'cogdoCraneGameSettings'
     attribs = (('GameDuration', 120, 'float'),
+     ('CogSpawnPeriod', 10.0, 'float'),
      ('EmptyFrictionCoef', 0.2, 'float'),
      ('Gravity', -32, 'int'),
      ('RopeLinkMass', 1.0, 'float'),
@@ -21,6 +22,5 @@ class CogdoCraneGameSettings(Entity):
 
 class CogdoCraneCogSettings(Entity):
     type = 'cogdoCraneCogSettings'
-    attribs = (('CogSpawnPeriod', 10.0, 'float'),
-     ('CogWalkSpeed', 2.0, 'float'),
+    attribs = (('CogWalkSpeed', 2.0, 'float'),
      ('CogMachineInteractDuration', 2.0, 'float'))

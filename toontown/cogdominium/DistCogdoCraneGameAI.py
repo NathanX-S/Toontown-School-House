@@ -20,6 +20,7 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
 
         self._cranes = [None] * CogdoGameConsts.MaxPlayers
         self._moneyBags = [None] * 4
+        self._cogs = []
 
         self._moneyBagsRespawnEvent = None
         self._gameDoneEvent = None
@@ -74,14 +75,19 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
 
         self._moneyBagsRespawnEvent = taskMgr.doMethodLater(Globals.MoneyBagsRespawnRate, self.generateMoneyBags,
                                                              self.uniqueName('generateMoneyBags'))
-
-        self._cog = DistCogdoCraneCogAI(self.air, self, self.getDroneCogDNA(), random.randrange(4), globalClock.getFrameTime())
-        self._cog.generateWithRequired(self.zoneId)
+        self._cogRespawnEvent = taskMgr.add(self.generateCog, self.uniqueName('respawnCog'))
 
         self._spotlightObstacle = DistCogdoCraneObstacleAI(self.air, self)
         self._spotlightObstacle.generateWithRequired(self.zoneId)
 
         self._scheduleGameDone()
+
+    def generateCog(self, task):
+        task.delayTime = Globals.Settings.CogSpawnPeriod.get()
+        cog = DistCogdoCraneCogAI(self.air, self, self.getDroneCogDNA(), random.randrange(4), globalClock.getFrameTime())
+        cog.generateWithRequired(self.zoneId)
+        self._cogs.append(cog)
+        return task.again
 
     def generateMoneyBags(self, task):
         moneyBagsToSpawn = range(0, 4)
@@ -108,14 +114,18 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
             self._gameDoneDL()
 
     def exitGame(self):
-        self._cog.requestDelete()
-        self._cog = None
+        for cog in self._cogs:
+            cog.requestDelete()
+            cog = None
 
         self._spotlightObstacle.requestDelete()
         del self._spotlightObstacle
 
         taskMgr.remove(self._moneyBagsRespawnEvent)
         self._moneyBagsRespawnEvent = None
+
+        taskMgr.remove(self._cogRespawnEvent)
+        self._cogRespawnEvent = None
 
         taskMgr.remove(self._gameDoneEvent)
         self._gameDoneEvent = None
