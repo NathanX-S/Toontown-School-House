@@ -51,12 +51,12 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
             self._moneyBags[i] = mBag
 
     def exitLoaded(self):
-        for bag in self.__moneyBags:
+        for bag in self._moneyBags:
             if bag:
                 bag.requestDelete()
                 bag = None
 
-        for crane in self.__cranes:
+        for crane in self._cranes:
             if crane:
                 crane.requestDelete()
                 crane = None
@@ -68,7 +68,7 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
         for i in xrange(self.getNumPlayers()):
             self._cranes[i].request('Controlled', self.getToonIds()[i])
 
-        for bag in self.__moneyBags:
+        for bag in self._moneyBags:
             if bag:
                 bag.request('Initial')
 

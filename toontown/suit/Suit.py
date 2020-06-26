@@ -32,7 +32,8 @@ AllSuitsBattle = (('drop-react', 'anvil-drop'),
  ('reach', 'walknreach'),
  ('rake-react', 'rake'),
  ('hypnotized', 'hypnotize'),
- ('soak', 'soak'))
+ ('soak', 'soak'),
+ ('pickpocket', 'pickpocket'))
 SuitsCEOBattle = (('sit', 'sit'),
  ('sit-eat-in', 'sit-eat-in'),
  ('sit-eat-loop', 'sit-eat-loop'),
@@ -69,7 +70,7 @@ hh = (('pen-squirt', 'fountain-pen', 7),
  ('throw-paper', 'throw-paper', 5),
  ('magic1', 'magic1', 5),
  ('roll-o-dex', 'roll-o-dex', 5))
-cr = (('pickpocket', 'pickpocket', 5), ('throw-paper', 'throw-paper', 3.5), ('glower', 'glower', 5))
+cr = (('throw-paper', 'throw-paper', 3.5), ('glower', 'glower', 5))
 tbc = (('cigar-smoke', 'cigar-smoke', 8),
  ('glower', 'glower', 5),
  ('song-and-dance', 'song-and-dance', 8),
@@ -80,11 +81,9 @@ cc = (('speak', 'speak', 5),
  ('finger-wag', 'finger-wag', 5))
 tm = (('speak', 'speak', 5),
  ('throw-paper', 'throw-paper', 5),
- ('pickpocket', 'pickpocket', 5),
  ('roll-o-dex', 'roll-o-dex', 5),
  ('finger-wag', 'finger-wag', 5))
-nd = (('pickpocket', 'pickpocket', 5),
- ('roll-o-dex', 'roll-o-dex', 5),
+nd = (('roll-o-dex', 'roll-o-dex', 5),
  ('magic3', 'magic3', 5),
  ('smile', 'smile', 5))
 gh = (('speak', 'speak', 5), ('pen-squirt', 'fountain-pen', 5), ('rubber-stamp', 'rubber-stamp', 5))
@@ -104,7 +103,7 @@ mh = (('magic1', 'magic1', 5),
  ('smile', 'smile', 5),
  ('golf-club-swing', 'golf-club-swing', 5),
  ('song-and-dance', 'song-and-dance', 5))
-sc = (('throw-paper', 'throw-paper', 3.5), ('watercooler', 'watercooler', 5), ('pickpocket', 'pickpocket', 5))
+sc = (('throw-paper', 'throw-paper', 3.5), ('watercooler', 'watercooler', 5))
 pp = (('throw-paper', 'throw-paper', 5), ('glower', 'glower', 5), ('finger-wag', 'fingerwag', 5))
 tw = (('throw-paper', 'throw-paper', 3.5),
  ('glower', 'glower', 5),
@@ -115,8 +114,7 @@ nc = (('phone', 'phone', 5), ('throw-object', 'throw-object', 5))
 mb = (('magic1', 'magic1', 5), ('throw-paper', 'throw-paper', 3.5))
 ls = (('throw-paper', 'throw-paper', 5), ('throw-object', 'throw-object', 5), ('hold-pencil', 'hold-pencil', 5))
 rb = (('glower', 'glower', 5), ('magic1', 'magic1', 5), ('golf-club-swing', 'golf-club-swing', 5))
-bf = (('pickpocket', 'pickpocket', 5),
- ('rubber-stamp', 'rubber-stamp', 5),
+bf = (('rubber-stamp', 'rubber-stamp', 5),
  ('shredder', 'shredder', 3.5),
  ('watercooler', 'watercooler', 5))
 b = (('effort', 'effort', 5),

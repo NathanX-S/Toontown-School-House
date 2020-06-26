@@ -1,10 +1,10 @@
 from direct.distributed.ClockDelta import globalClockDelta
-from direct.distributed.DistributedObjectAI import DistributedObjectAI
+from toontown.suit.DistributedSuitAI import DistributedSuitAI
 
-class DistCogdoCraneCogAI(DistributedObjectAI):
+class DistCogdoCraneCogAI(DistributedSuitAI):
 
     def __init__(self, air, game, dna, entranceId, spawnTime):
-        DistributedObjectAI.__init__(self, air)
+        DistributedSuitAI.__init__(self, air)
         self._gameId = game.doId
         self._dna = dna
         self._entranceId = entranceId
