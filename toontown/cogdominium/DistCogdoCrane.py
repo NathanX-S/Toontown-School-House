@@ -623,7 +623,6 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
         try:
             doId = int(np.getNetTag('object'))
         except ValueError as e:
-            print(e)
             return
         obj = base.cr.doId2do.get(doId)
         if obj and obj.state != 'LocalDropped' and (obj.state != 'Dropped' or obj.craneId != self.doId):

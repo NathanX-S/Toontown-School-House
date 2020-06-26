@@ -77,9 +77,8 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
             self.craneGame.game.physicsMgr.attachPhysicalNode(self.node())
             base.cTrav.addCollider(self.collisionNodePath, self.handler)
             self.physicsActivated = 1
+            self.accept(self.collideName + '-cog', self.__hitCog)
             self.accept(self.collideName + '-floor', self.__hitFloor)
-            self.accept(self.collideName + '-goon', self.__hitGoon)
-            self.acceptOnce(self.collideName + '-headTarget', self.__hitBoss)
             self.accept(self.collideName + '-dropPlane', self.__hitDropPlane)
 
     def deactivatePhysics(self):
@@ -87,9 +86,8 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
             self.craneGame.game.physicsMgr.removePhysicalNode(self.node())
             base.cTrav.removeCollider(self.collisionNodePath)
             self.physicsActivated = 0
+            self.ignore(self.collideName + '-cog')
             self.ignore(self.collideName + '-floor')
-            self.ignore(self.collideName + '-goon')
-            self.ignore(self.collideName + '-headTarget')
             self.ignore(self.collideName + '-dropPlane')
 
     def hideShadows(self):
@@ -108,33 +106,6 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
         if self.state == 'Dropped' or self.state == 'LocalDropped':
             self.d_hitFloor()
             self.demand('SlidingFloor', localAvatar.doId)
-
-    def __hitGoon(self, entry):
-        if self.state == 'Dropped' or self.state == 'LocalDropped':
-            goonId = int(entry.getIntoNodePath().getNetTag('doId'))
-            goon = self.cr.doId2do.get(goonId)
-            if goon:
-                self.doHitGoon(goon)
-
-    def doHitGoon(self, goon):
-        pass
-
-    def __hitBoss(self, entry):
-        if (self.state == 'Dropped' or self.state == 'LocalDropped') and self.craneId != self.craneGame.doId:
-            vel = self.physicsObject.getVelocity()
-            vel = self.crane.root.getRelativeVector(render, vel)
-            vel.normalize()
-            impact = vel[1]
-            if impact >= self.getMinImpact():
-                print 'hit! %s' % impact
-                self.hitBossSoundInterval.start()
-                self.doHitBoss(impact)
-            else:
-                self.touchedBossSoundInterval.start()
-                print '--not hard enough: %s' % impact
-
-    def doHitBoss(self, impact):
-        self.d_hitBoss(impact)
 
     def __hitDropPlane(self, entry):
         self.notify.info('%s fell out of the world.' % self.doId)
@@ -195,9 +166,6 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
          self.getY(),
          self.getZ(),
          self.getH()])
-
-    def d_hitBoss(self, impact):
-        self.sendUpdate('hitBoss', [impact])
 
     def defaultFilter(self, request, args):
         if self.craneGame == None:
@@ -320,3 +288,6 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
 
     def exitFree(self):
         pass
+
+    def __hitCog(self, *args):
+        print(args)

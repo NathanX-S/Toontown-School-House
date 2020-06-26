@@ -20,6 +20,10 @@ class DistCogdoCraneCog(DistributedSuit):
         return self.cr.doId2do.get(self._gameId)
 
     def setSpawnInfo(self, entranceId, timestamp):
+        self.initializeBodyCollisions('suit')
+        self.setName('cog-%s' % self.doId)
+        self.setTag('doId', str(self.doId))
+        self.collNode.setName('cog')
         self._startMoveIval(entranceId, globalClockDelta.networkToLocalTime(timestamp))
 
     def _startMoveIval(self, entranceId, startT):
