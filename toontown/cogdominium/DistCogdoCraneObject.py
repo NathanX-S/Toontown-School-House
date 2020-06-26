@@ -4,6 +4,7 @@ from direct.interval.IntervalGlobal import *
 from direct.directnotify import DirectNotifyGlobal
 from direct.distributed import DistributedSmoothNode
 from toontown.toonbase import ToontownGlobals
+from toontown.cogdominium import CogdoCraneGameGlobals as Globals
 from otp.otpbase import OTPGlobals
 from direct.fsm import FSM
 from direct.task import Task
@@ -289,5 +290,18 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
     def exitFree(self):
         pass
 
-    def __hitCog(self, *args):
-        print(args)
+    def __hitCog(self, entry):
+        if self.state in ('Dropped', 'LocalDropped'):
+            cogId = int(entry.getIntoNodePath().getNetTag('doId'))
+            cog = self.cr.doId2do.get(cogId)
+            if cog:
+                self.doHitCog(cog)
+
+    def doHitCog(self, cog):
+        print(cog.fsm.getCurrentState())
+        print(cog.fsm)
+        if cog.fsm.getCurrentState().getName() != 'Walk':
+            print("Hey, we're not movin'! Leave us alone!")
+            return
+        cog.explode()
+        messenger.send(Globals.Settings.CogDiedEvent.get())

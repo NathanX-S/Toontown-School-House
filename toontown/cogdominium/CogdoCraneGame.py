@@ -75,11 +75,16 @@ class CogdoCraneGame(DirectObject):
         planeNode.addSolid(plane)
         planeNode.setCollideMask(ToontownGlobals.PieBitmask)
         self.geomRoot.attachNewNode(planeNode)
+
         self.stompOMatic = loader.loadModel(Globals.ModelFiles['stompOMatic'])
         self.stompOMatic.reparentTo(self.level)
         self.stompOMatic.setZ(6.038)
+
         self.guiMgr = CogdoCraneGuiManager(self.geomRoot)
+
         self.coinSfx = self.audioMgr.createSfx('coinSfx')
+
+        self.accept(Globals.Settings.CogDiedEvent.get(), self.handleCogDied)
 
     def getSceneRoot(self):
         return self.sceneRoot
@@ -246,6 +251,9 @@ class CogdoCraneGame(DirectObject):
         #if not self.localPlayer.isInvulnerable():
             #self.guiMgr.setMessage('')
         return
+
+    def handleCogDied(self, cog):
+        cog.destroy()
 
     def gameComplete(self):
         return

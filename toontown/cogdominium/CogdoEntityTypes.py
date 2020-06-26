@@ -17,10 +17,11 @@ class CogdoCraneGameSettings(Entity):
      ('Gravity', -32, 'int'),
      ('RopeLinkMass', 1.0, 'float'),
      ('MagnetMass', 1.0, 'float'),
-     ('MoneyBagGrabHeight', -8.2, 'float'))
+     ('MoneyBagGrabHeight', -8.2, 'float'),
+     ('CogDiedEvent', 'CraneCog_Died', 'str'))
 
 
 class CogdoCraneCogSettings(Entity):
     type = 'cogdoCraneCogSettings'
     attribs = (('CogWalkSpeed', 2.0, 'float'),
-     ('CogMachineInteractDuration', 2.0, 'float'))
+     ('CogMachineInteractDuration', 0.5, 'float'))
