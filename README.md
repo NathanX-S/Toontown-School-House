@@ -3,7 +3,7 @@ Welcome to the Toontown School House repistory!
 
 Toontown School House is a course dedicated to teaching members of the Toontown community how to develop for the game. For more information, head over to [this](https://www.reddit.com/r/Toontown/comments/doszgg/toontown_school_house_learn_to_develop_for/) Reddit post.
 
-Feel free to join our Discord server [here!](https://discord.gg/n3ms7BP)
+Feel free to join our Discord server [here!](https://discord.gg/xFGA8Xa)
 
 
 # Source Code
@@ -27,7 +27,7 @@ This source code requires a customized version of Panda3D to run. Here are links
 
 
 # Libuv 
-This source code requires libuv.dll in the astrond folder to run. Here are links to the 32 bit dll and 64 bit dll.
+This source code requires libuv.dll in the astron folder to run. Here are links to the 32 bit dll and 64 bit dll.
 [Libuv.dll (32-bit)](https://cdn.discordapp.com/attachments/638485243560460309/640339222682664973/libuv.dll)
 [Libuv.dll(64-bit)](https://cdn.discordapp.com/attachments/638485243560460309/640339153346887696/libuv.dll)
 After downloading the file just drop it in the astron folder
