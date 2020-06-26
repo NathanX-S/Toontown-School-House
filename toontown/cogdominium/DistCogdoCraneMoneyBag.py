@@ -50,10 +50,12 @@ class DistCogdoCraneMoneyBag(DistCogdoCraneObject):
         DistCogdoCraneObject.disable(self)
 
     def hideShadows(self):
-        self.shadow.hide()
+        if self.shadow:
+            self.shadow.hide()
 
     def showShadows(self):
-        self.shadow.show()
+        if self.shadow:
+            self.shadow.show()
 
     def getMinImpact(self):
         if self.craneGame.heldObject:
