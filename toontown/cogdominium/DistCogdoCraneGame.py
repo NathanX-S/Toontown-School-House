@@ -68,5 +68,5 @@ class DistCogdoCraneGame(DistCogdoGame):
         DistCogdoGame.exitGame(self)
         self.game.exit()
 
-    def enterFinish(self):
-        return
+    def enterFinish(self): # TODO
+        pass

@@ -51,15 +51,15 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
             self._moneyBags[i] = mBag
 
     def exitLoaded(self):
-        for i in xrange(len(self._moneyBags)):
-            if self._moneyBags[i]:
-                self._moneyBags[i].requestDelete()
-                self._moneyBags[i] = None
+        for bag in self.__moneyBags:
+            if bag:
+                bag.requestDelete()
+                bag = None
 
-        for i in xrange(CogdoGameConsts.MaxPlayers):
-            if self._cranes[i]:
-                self._cranes[i].requestDelete()
-                self._cranes[i] = None
+        for crane in self.__cranes:
+            if crane:
+                crane.requestDelete()
+                crane = None
 
         DistCogdoGameAI.exitLoaded(self)
 
@@ -68,9 +68,9 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
         for i in xrange(self.getNumPlayers()):
             self._cranes[i].request('Controlled', self.getToonIds()[i])
 
-        for i in xrange(len(self._moneyBags)):
-            if self._moneyBags[i]:
-                self._moneyBags[i].request('Initial')
+        for bag in self.__moneyBags:
+            if bag:
+                bag.request('Initial')
 
         self._moneyBagsRespawnEvent = taskMgr.doMethodLater(Globals.MoneyBagsRespawnRate, self.generateMoneyBags,
                                                              self.uniqueName('generateMoneyBags'))
