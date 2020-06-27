@@ -14,7 +14,7 @@ class DistCogdoCraneCog(DistributedSuit):
         DistributedSuit.__init__(self, cr)
         self.fsm = ClassicFSM.ClassicFSM('DistributedSuit', [State.State('Off', self.enterOff, self.exitOff, ['Walk']),
          State.State('FlyAway', self.enterFlyAway, self.exitFlyAway, ['Off']),
-         State.State('Walk', self.enterWalk, self.exitWalk, ['Interact']),
+         State.State('Walk', self.enterWalk, self.exitWalk, ['Interact', 'Off']),
          State.State('Interact', self.enterInteract, self.exitInteract, ['Off', 'FlyAway'])], 'Off', 'Off')
         self.fsm.enterInitialState()
         self._moveIval = None
@@ -55,8 +55,7 @@ class DistCogdoCraneCog(DistributedSuit):
                                LerpPosInterval(self, walkDur, endPos, startPos=startPos))
         interactIval = Sequence(Func(self.fsm.request, 'Interact'), Func(game.coinSfx.play), ActorInterval(self, 'pickpocket'),
                                    Wait(Globals.CogSettings.CogMachineInteractDuration.get()), Func(self.fsm.request, 'FlyAway'))
-        flyIval = self.beginSupaFlyMove(endPos, 0, 'flyAway')
-        self._moveIval = Sequence(moveIval, interactIval, flyIval, Wait(5))
+        self._moveIval = Sequence(moveIval, interactIval)
         self._moveIval.start(globalClock.getFrameTime() - startT)
 
     def exitWalk(self):
@@ -70,13 +69,14 @@ class DistCogdoCraneCog(DistributedSuit):
 
     def _stopMoveIval(self):
         if self._moveIval:
-            self._moveIval.finish()
+            self._moveIval.pause()
             self._moveIval = None
         return
 
     def explode(self):
+        self._stopMoveIval()
         self.doDeathTrack()
-        messenger.send(Globals.Settings.CogDiedEvent.get(), [self])
+        messenger.send(Globals.Settings.CogDiedEvent.get(), [self]) #We're done flyin'. Tell it we're dead.
 
     def doDeathTrack(self):
 

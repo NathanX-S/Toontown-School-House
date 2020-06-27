@@ -41,6 +41,7 @@ class DistributedSuit(DistributedSuitBase.DistributedSuitBase, DelayDeletable):
             self.DistributedSuit_initialized = 1
 
         DistributedSuitBase.DistributedSuitBase.__init__(self, cr)
+        self.sp = None
         self.spDoId = None
         self.pathEndpointStart = 0
         self.pathEndpointEnd = 0
@@ -56,6 +57,7 @@ class DistributedSuit(DistributedSuitBase.DistributedSuitBase, DelayDeletable):
         self.legList = None
         self.initState = None
         self.finalState = None
+        self.mtrack = None
         self.buildingSuit = 0
         self.fsm = ClassicFSM.ClassicFSM('DistributedSuit', [
             State.State('Off',
@@ -592,17 +594,18 @@ class DistributedSuit(DistributedSuitBase.DistributedSuitBase, DelayDeletable):
         self.resumePath(0)
 
     def enterFlyAway(self):
-        self.enableBattleDetect('flyAway', self.__handleToonCollision)
-        if not self.verifySuitPlanner():
-            return
+        if self.verifySuitPlanner():
+            self.enableBattleDetect('flyAway', self.__handleToonCollision)
         b = Point3(self.getPos())
         self.mtrack = self.beginSupaFlyMove(b, 0, 'flyAway')
         self.mtrack.start()
 
     def exitFlyAway(self):
-        self.disableBattleDetect()
-        self.mtrack.finish()
-        del self.mtrack
+        if self.verifySuitPlanner():
+            self.disableBattleDetect()
+        if self.mtrack:
+            self.mtrack.finish()
+            del self.mtrack
         self.detachPropeller()
 
     def enterDanceThenFlyAway(self):

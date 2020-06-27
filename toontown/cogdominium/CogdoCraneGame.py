@@ -252,8 +252,8 @@ class CogdoCraneGame(DirectObject):
             #self.guiMgr.setMessage('')
         return
 
-    def handleCogDied(self, cog):
-        cog.destroy()
+    def handleCogDied(self, cog): #TODO
+        pass
 
     def gameComplete(self):
         return

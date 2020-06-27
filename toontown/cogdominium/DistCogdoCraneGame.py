@@ -15,6 +15,7 @@ class DistCogdoCraneGame(DistCogdoGame):
         self.game = CogdoCraneGame(self)
         self.cranes = {}
         self.moneyBags = {}
+        self.accept('resistanceIncoming', self.resistanceIncoming)
 
     def getTitle(self):
         return TTL.CogdoCraneGameTitle
@@ -67,6 +68,9 @@ class DistCogdoCraneGame(DistCogdoGame):
     def exitGame(self):
         DistCogdoGame.exitGame(self)
         self.game.exit()
+
+    def resistanceIncoming(self):
+        print("LOL")
 
     def enterFinish(self): # TODO
         pass

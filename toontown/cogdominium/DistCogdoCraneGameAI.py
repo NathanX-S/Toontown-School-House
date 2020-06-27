@@ -79,8 +79,10 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
 
         self._spotlightObstacle = DistCogdoCraneObstacleAI(self.air, self)
         self._spotlightObstacle.generateWithRequired(self.zoneId)
+        duration = Globals.Settings.GameDuration.get()
 
-        self._scheduleGameDone()
+        self._resistanceIncomingEvent = taskMgr.doMethodLater(duration / 2.0, self._resistanceIncoming, self.uniqueName('resistanceIncoming'))
+        self._gameDoneEvent = taskMgr.doMethodLater(duration, self._gameDoneDL, self.uniqueName('craneGameDone'))
 
     def generateCog(self, task):
         task.delayTime = Globals.Settings.CogSpawnPeriod.get()
@@ -106,13 +108,6 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
 
         return task.again
 
-    def _scheduleGameDone(self):
-        timeLeft = Globals.Settings.GameDuration.get() - (globalClock.getRealTime() - self.getStartTime())
-        if timeLeft > 0:
-            self._gameDoneEvent = taskMgr.doMethodLater(timeLeft, self._gameDoneDL, self.uniqueName('boardroomGameDone'))
-        else:
-            self._gameDoneDL()
-
     def exitGame(self):
         for cog in self._cogs:
             cog.requestDelete()
@@ -130,13 +125,16 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
         taskMgr.remove(self._gameDoneEvent)
         self._gameDoneEvent = None
 
+        taskMgr.remove(self._resistanceIncomingEvent)
+        self._resistanceIncomingEvent = None
+
     def _gameDoneDL(self, task = None):
         self._handleGameFinished()
         return task.done
 
     def enterFinish(self):
         DistCogdoGameAI.enterFinish(self)
-        self._finishDoneEvent = taskMgr.doMethodLater(10.0, self._finishDoneDL, self.uniqueName('boardroomFinishDone'))
+        self._finishDoneEvent = taskMgr.doMethodLater(10.0, self._finishDoneDL, self.uniqueName('craneFinishDone'))
 
     def exitFinish(self):
         taskMgr.remove(self._finishDoneEvent)
@@ -144,6 +142,10 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
 
     def _finishDoneDL(self, task):
         self.announceGameDone()
+        return task.done
+
+    def _resistanceIncoming(self, task):
+        self.sendUpdate('resistanceIncoming')
         return task.done
 
     def getDroneCogDNA(self):

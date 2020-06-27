@@ -29,8 +29,6 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
         self.audioMgr = base.cogdoGameAudioMgr
         self.toMagnetSoundInterval = Sequence()
         self.hitFloorSoundInterval = Sequence()
-        self.hitBossSoundInterval = self.audioMgr.createSfxIval('hitBossSfx')
-        self.touchedBossSoundInterval = self.audioMgr.createSfxIval('touchedBossSfx', duration=0.8)
         self.lerpInterval = None
         return
 
@@ -48,12 +46,8 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
         self.detachNode()
         self.toMagnetSoundInterval.finish()
         self.hitFloorSoundInterval.finish()
-        self.hitBossSoundInterval.finish()
-        self.touchedBossSoundInterval.finish()
         del self.toMagnetSoundInterval
         del self.hitFloorSoundInterval
-        del self.hitBossSoundInterval
-        del self.touchedBossSoundInterval
         self.craneGame = None
         return
 
@@ -298,10 +292,7 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
                 self.doHitCog(cog)
 
     def doHitCog(self, cog):
-        print(cog.fsm.getCurrentState())
-        print(cog.fsm)
         if cog.fsm.getCurrentState().getName() != 'Walk':
             print("Hey, we're not movin'! Leave us alone!")
             return
         cog.explode()
-        messenger.send(Globals.Settings.CogDiedEvent.get())
