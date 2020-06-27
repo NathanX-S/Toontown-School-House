@@ -19,6 +19,7 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
         NodePath.__init__(self, uniqueName('CraneGameAI'))
 
         self._cranes = [None] * CogdoGameConsts.MaxPlayers
+        self._moneyBagCounter = 0
         self._moneyBags = [None] * 4
         self._cogs = []
 
@@ -92,13 +93,13 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
         return task.again
 
     def generateMoneyBags(self, task):
-        moneyBagsToSpawn = range(0, 4)
-        availableMoneyBags = []
+        moneyBagsToSpawn = range(0, self.getNumPlayers())
+        existingMoneyBags = []
         for moneyBag in self._moneyBags:
             index = moneyBag.getIndex()
-            availableMoneyBags.append(index)
+            existingMoneyBags.append(index)
 
-        moneyBagsToSpawn = [x for x in moneyBagsToSpawn if x not in availableMoneyBags]
+        moneyBagsToSpawn = [x for x in moneyBagsToSpawn if x not in existingMoneyBags]
 
         for i in moneyBagsToSpawn:
             mBag = DistCogdoCraneMoneyBagAI(self.air, self, i)

@@ -18,6 +18,7 @@ class CogdoCraneGameSettings(Entity):
      ('RopeLinkMass', 1.0, 'float'),
      ('MagnetMass', 1.0, 'float'),
      ('MoneyBagGrabHeight', -4.25, 'float'),
+     ('MoneyBagAmount', 20, 'int'),
      ('CogDiedEvent', 'CraneCog_Died', 'str'))
 
 
