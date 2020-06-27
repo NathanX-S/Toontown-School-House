@@ -102,6 +102,9 @@ class DistCogdoCraneGameAI(DistCogdoGameAI, NodePath):
         moneyBagsToSpawn = [x for x in moneyBagsToSpawn if x not in existingMoneyBags]
 
         for i in moneyBagsToSpawn:
+            self._moneyBagCounter += 1
+            if self._moneyBagCounter > Globals.Settings.MoneyBagAmount:
+                return task.done
             mBag = DistCogdoCraneMoneyBagAI(self.air, self, i)
             mBag.generateWithRequired(self.zoneId)
             mBag.request('Join')
