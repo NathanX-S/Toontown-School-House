@@ -296,3 +296,4 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
             print("Hey, we're not movin'! Leave us alone!")
             return
         cog.explode()
+        self.cleanup()
