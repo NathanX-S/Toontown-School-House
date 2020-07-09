@@ -4,7 +4,7 @@ from toontown.toonbase import ToontownGlobals
 from direct.showbase import DirectObject
 from direct.fsm import StateData
 from direct.gui.DirectGui import *
-from toontown.toonbase import TTLocalizer
+from toontown.toonbase import TTLocalizer as TTL
 from toontown.effects import DistributedFireworkShow
 from toontown.parties import DistributedPartyFireworksActivity
 from direct.directnotify import DirectNotifyGlobal
@@ -30,22 +30,44 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         self.__isOpen = 0
         self.hide()
         self.setPos(0, 0, 0.1)
-        self.pageOrder = [TTLocalizer.OptionsPageTitle,
-         TTLocalizer.ShardPageTitle,
-         TTLocalizer.MapPageTitle,
-         TTLocalizer.InventoryPageTitle,
-         TTLocalizer.QuestPageToonTasks,
-         TTLocalizer.TrackPageShortTitle,
-         TTLocalizer.SuitPageTitle,
-         TTLocalizer.FishPageTitle,
-         TTLocalizer.KartPageTitle,
-         TTLocalizer.DisguisePageTitle,
-         TTLocalizer.NPCFriendPageTitle,
-         TTLocalizer.GardenPageTitle,
-         TTLocalizer.GolfPageTitle,
-         TTLocalizer.EventsPageName,
-         TTLocalizer.NewsPageName,
-         TTLocalizer.SpellbookPageTitle]
+        self.pageOrder = [TTL.OptionsPageTitle,
+         TTL.AchievePageTitle,
+         TTL.ShardPageTitle,
+         TTL.MapPageTitle,
+         TTL.InventoryPageTitle,
+         TTL.QuestPageToonTasks,
+         TTL.TrackPageShortTitle,
+         TTL.SuitPageTitle,
+         TTL.FishPageTitle,
+         TTL.KartPageTitle,
+         TTL.DisguisePageTitle,
+         TTL.NPCFriendPageTitle,
+         TTL.GardenPageTitle,
+         TTL.GolfPageTitle,
+         TTL.EventsPageName,
+         TTL.NewsPageName,
+         TTL.SpellbookPageTitle]
+        sos_textures = loader.loadModel('phase_3.5/models/gui/sos_textures')
+        stickerbook_gui = loader.loadModel('phase_3.5/models/gui/stickerbook_gui')
+        inventory_icons = loader.loadModel('phase_3.5/models/gui/inventory_icons')
+        playing_card = loader.loadModel('phase_3.5/models/gui/playingCard')
+        golf_gui = loader.loadModel('phase_6/models/golf/golf_gui')
+        party_stickerbook = loader.loadModel('phase_4/models/parties/partyStickerbook')
+        self.pageDefs = {TTL.OptionsPageTitle: [sos_textures.find('**/switch1')],
+         TTL.ShardPageTitle: [sos_textures.find('**/district')],
+         TTL.MapPageTitle: [sos_textures.find('**/teleportIcon')],
+         TTL.InventoryPageTitle: [inventory_icons.find('**/inventory_tart'), 7],
+         TTL.QuestPageToonTasks: [stickerbook_gui.find('**/questCard'), 0.9],
+         TTL.TrackPageShortTitle: [loader.loadModel('phase_3.5/models/gui/filmstrip'), 1.1, Vec4(0.7, 0.7, 0.7, 1)],
+         TTL.SuitPageTitle: [sos_textures.find('**/gui_gear')],
+         TTL.FishPageTitle: [sos_textures.find('**/fish')],
+         TTL.GardenPageTitle: [sos_textures.find('**/gardenIcon')],
+         TTL.DisguisePageTitle: [sos_textures.find('**/disguise2'), 1, Vec4(0.7, 0.7, 0.7, 1)],
+         TTL.NPCFriendPageTitle: [(playing_card.find('**/card_back'), playing_card.find('**/logo')), 0.22],
+         TTL.KartPageTitle: [sos_textures.find('**/kartIcon')],
+         TTL.GolfPageTitle: [golf_gui.find('**/score_card_icon')],
+         TTL.EventsPageName: [party_stickerbook.find('**/Stickerbook_PartyIcon')],
+         TTL.SpellbookPageTitle: [sos_textures.find('**/spellbookIcon')]}
         return
 
     def setSafeMode(self, setting):
@@ -61,8 +83,6 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         messenger.send('stickerBookEntered')
         base.playSfx(self.openSound)
         base.disableMouse()
-        base.render.hide()
-        base.setBackgroundColor(0.05, 0.15, 0.4)
         base.setCellsAvailable([base.rightCells[0]], 0)
         self.oldMin2dAlpha = NametagGlobals.getMin2dAlpha()
         self.oldMax2dAlpha = NametagGlobals.getMax2dAlpha()
@@ -88,19 +108,6 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         messenger.send('stickerBookExited')
         base.playSfx(self.closeSound)
         self.pages[self.currPageIndex].exit()
-        base.render.show()
-        setBlackBackground = 0
-        for obj in base.cr.doId2do.values():
-            if isinstance(obj, DistributedFireworkShow.DistributedFireworkShow) or isinstance(obj, DistributedPartyFireworksActivity.DistributedPartyFireworksActivity):
-                setBlackBackground = 1
-
-        if setBlackBackground:
-            base.setBackgroundColor(Vec4(0, 0, 0, 1))
-        else:
-            base.setBackgroundColor(ToontownGlobals.DefaultBackgroundColor)
-        gsg = base.win.getGsg()
-        if gsg:
-            base.render.prepareScene(gsg)
         NametagGlobals.setMin2dAlpha(self.oldMin2dAlpha)
         NametagGlobals.setMax2dAlpha(self.oldMax2dAlpha)
         base.setCellsAvailable([base.rightCells[0]], 1)
@@ -165,16 +172,8 @@ class ShtikerBook(DirectFrame, StateData.StateData):
             return
         pageIndex = 0
         if len(self.pages):
-            newIndex = len(self.pages)
-            prevIndex = newIndex - 1
-            if self.pages[prevIndex].pageName == TTLocalizer.NewsPageName:
-                self.pages.insert(prevIndex, page)
-                pageIndex = prevIndex
-                if self.currPageIndex >= pageIndex:
-                    self.currPageIndex += 1
-            else:
-                self.pages.append(page)
-                pageIndex = len(self.pages) - 1
+            self.pages.append(page)
+            pageIndex = len(self.pages) - 1
         else:
             self.pages.append(page)
             pageIndex = len(self.pages) - 1
@@ -205,87 +204,25 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         iconColor = Vec4(1)
         buttonPressedCommand = goToPage
         extraArgs = []
-        if pageName == TTLocalizer.OptionsPageTitle:
-            iconModels = loader.loadModel('phase_3.5/models/gui/sos_textures')
-            iconGeom = iconModels.find('**/switch1')
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.ShardPageTitle:
-            iconModels = loader.loadModel('phase_3.5/models/gui/sos_textures')
-            iconGeom = iconModels.find('**/district')
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.MapPageTitle:
-            iconModels = loader.loadModel('phase_3.5/models/gui/sos_textures')
-            iconGeom = iconModels.find('**/teleportIcon')
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.InventoryPageTitle:
-            iconModels = loader.loadModel('phase_3.5/models/gui/inventory_icons')
-            iconGeom = iconModels.find('**/inventory_tart')
-            iconScale = 7
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.QuestPageToonTasks:
-            iconModels = loader.loadModel('phase_3.5/models/gui/stickerbook_gui')
-            iconGeom = iconModels.find('**/questCard')
-            iconScale = 0.9
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.TrackPageShortTitle:
-            iconGeom = iconModels = loader.loadModel('phase_3.5/models/gui/filmstrip')
-            iconScale = 1.1
-            iconColor = Vec4(0.7, 0.7, 0.7, 1)
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.SuitPageTitle:
-            iconModels = loader.loadModel('phase_3.5/models/gui/sos_textures')
-            iconGeom = iconModels.find('**/gui_gear')
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.FishPageTitle:
-            iconModels = loader.loadModel('phase_3.5/models/gui/sos_textures')
-            iconGeom = iconModels.find('**/fish')
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.GardenPageTitle:
-            iconModels = loader.loadModel('phase_3.5/models/gui/sos_textures')
-            iconGeom = iconModels.find('**/gardenIcon')
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.DisguisePageTitle:
-            iconModels = loader.loadModel('phase_3.5/models/gui/sos_textures')
-            iconGeom = iconModels.find('**/disguise2')
-            iconColor = Vec4(0.7, 0.7, 0.7, 1)
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.NPCFriendPageTitle:
-            iconModels = loader.loadModel('phase_3.5/models/gui/playingCard')
-            iconImage = iconModels.find('**/card_back')
-            iconGeom = iconModels.find('**/logo')
-            iconScale = 0.22
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.KartPageTitle:
-            iconModels = loader.loadModel('phase_3.5/models/gui/sos_textures')
-            iconGeom = iconModels.find('**/kartIcon')
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.GolfPageTitle:
-            iconModels = loader.loadModel('phase_6/models/golf/golf_gui')
-            iconGeom = iconModels.find('**/score_card_icon')
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.EventsPageName:
-            iconModels = loader.loadModel('phase_4/models/parties/partyStickerbook')
-            iconGeom = iconModels.find('**/Stickerbook_PartyIcon')
-            iconModels.detachNode()
-        elif pageName == TTLocalizer.NewsPageName:
-            iconModels = loader.loadModel('phase_3.5/models/gui/sos_textures')
-            iconGeom = iconModels.find('**/tt_t_gui_sbk_newsPageTab')
-            iconModels.detachNode()
-            buttonPressedCommand = self.goToNewsPage
-            extraArgs = [page]
-        elif pageName == TTLocalizer.SpellbookPageTitle:
-            iconModels = loader.loadModel('phase_3.5/models/gui/sos_textures')
-            iconGeom = iconModels.find('**/spellbookIcon')
-            iconModels.detachNode()
-        if pageName == TTLocalizer.OptionsPageTitle:
-            pageName = TTLocalizer.OptionsTabTitle
+        pageItem = self.pageDefs[pageName]
+        if isinstance(pageItem[0], tuple):
+            iconImage = pageItem[0][0]
+            iconGeom = pageItem[0][1]
+        else:
+            iconGeom = pageItem[0]
+        if len(pageItem) > 1:
+            iconScale = pageItem[1]
+        if len(pageItem) > 2:
+            iconColor = pageItem[2]
+        if pageName == TTL.OptionsPageTitle:
+            pageName = TTL.OptionsTabTitle
         pageTab = DirectButton(parent=self.pageTabFrame, relief=DGG.RAISED, frameSize=(-0.575,
          0.575,
          -0.575,
          0.575), borderWidth=(0.05, 0.05), text=('',
          '',
          pageName,
-         ''), text_align=TextNode.ALeft, text_pos=(1, -0.2), text_scale=TTLocalizer.SBpageTab, text_fg=(1, 1, 1, 1), text_shadow=(0, 0, 0, 1), image=iconImage, image_scale=iconScale, geom=iconGeom, geom_scale=iconScale, geom_color=iconColor, pos=(0, 0, -yOffset), scale=0.06, command=buttonPressedCommand, extraArgs=extraArgs)
+         ''), text_align=TextNode.ALeft, text_pos=(1, -0.2), text_scale=TTL.SBpageTab, text_fg=(1, 1, 1, 1), text_shadow=(0, 0, 0, 1), image=iconImage, image_scale=iconScale, geom=iconGeom, geom_scale=iconScale, geom_color=iconColor, pos=(0, 0, -yOffset), scale=0.06, command=buttonPressedCommand, extraArgs=extraArgs)
         self.pageTabs.insert(pageIndex, pageTab)
         return
 
@@ -364,7 +301,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         messenger.send('enterStickerBook')
         if not localAvatar.getGardenStarted():
             for tab in self.pageTabs:
-                if tab['text'][2] == TTLocalizer.GardenPageTitle:
+                if tab['text'][2] == TTL.GardenPageTitle:
                     tab.hide()
 
     def __close(self):
