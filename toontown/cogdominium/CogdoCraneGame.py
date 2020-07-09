@@ -84,6 +84,7 @@ class CogdoCraneGame(DirectObject):
 
         self.coinSfx = self.audioMgr.createSfx('coinSfx')
 
+        self.teleportHole = Actor.Actor('phase_3.5/models/props/portal-mod', {'hole': 'phase_3.5/models/props/portal-chan'})
         self.accept(Globals.Settings.CogDiedEvent.get(), self.handleCogDied)
 
     def getSceneRoot(self):
