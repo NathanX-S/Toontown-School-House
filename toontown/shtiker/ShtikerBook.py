@@ -22,7 +22,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         self.pageTabFrame = DirectFrame(parent=self, relief=None, pos=(0.93, 1, 0.575), scale=1.25)
         self.pageTabFrame.hide()
         self.currPageIndex = None
-         self.entered = 0
+        self.entered = 0
         self.safeMode = 0
         self.__obscured = 0
         self.__shown = 0
