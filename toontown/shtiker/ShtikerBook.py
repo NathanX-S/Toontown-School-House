@@ -97,8 +97,6 @@ class ShtikerBook(DirectFrame, StateData.StateData):
             self.accept(ToontownGlobals.OptionsPageHotkey, self.__close)
             self.pageTabFrame.show()
         self.pages[self.currPageIndex].enter()
-        if hasattr(localAvatar, 'newsButtonMgr') and localAvatar.newsButtonMgr:
-            localAvatar.newsButtonMgr.hideNewIssueButton()
 
     def exit(self):
         if not self.entered:
@@ -190,7 +188,6 @@ class ShtikerBook(DirectFrame, StateData.StateData):
             self.setPage(page)
             if base.config.GetBool('want-qa-regression', 0):
                 self.notify.info('QA-REGRESSION: SHTICKERBOOK: Browse tabs %s' % page.pageName)
-            localAvatar.newsButtonMgr.showAppropriateButton()
 
         yOffset = (-0.065 * pageIndex) + 0.0875
         iconGeom = None
@@ -255,12 +252,10 @@ class ShtikerBook(DirectFrame, StateData.StateData):
     def showButton(self):
         self.__shown = 1
         self.__setButtonVisibility()
-        localAvatar.newsButtonMgr.showAppropriateButton()
 
     def hideButton(self):
         self.__shown = 0
         self.__setButtonVisibility()
-        localAvatar.newsButtonMgr.request('Hidden')
 
     def __setButtonVisibility(self):
         if self.__isOpen:
