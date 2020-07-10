@@ -101,6 +101,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         self.deliveryManager = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_TOONTOWN_DELIVERY_MANAGER, 'DistributedDeliveryManager')
         if config.GetBool('want-code-redemption', 1):
             self.codeRedemptionManager = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_TOONTOWN_CODE_REDEMPTION_MANAGER, 'TTCodeRedemptionMgr')
+        self.achievementManager = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_TOONTOWN_ACHIEVEMENT_MANAGER, 'TTAchievementManager')
 
         self.streetSign = None
         self.furnitureManager = None

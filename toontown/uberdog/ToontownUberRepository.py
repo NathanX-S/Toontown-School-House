@@ -14,6 +14,7 @@ class ToontownUberRepository(ToontownInternalRepository):
         self.ttoffFriendsManager = None
         self.chatManager = None
         self.deliveryManager = None
+        self.achievementManager = None
 
     def handleConnected(self):
         ToontownInternalRepository.handleConnected(self)
@@ -32,3 +33,5 @@ class ToontownUberRepository(ToontownInternalRepository):
         self.chatManager = self.generateGlobalObject(OTP_DO_ID_CHAT_MANAGER, 'TTOffChatManager')
         self.deliveryManager = self.generateGlobalObject(OTP_DO_ID_TOONTOWN_DELIVERY_MANAGER,
                                                          'DistributedDeliveryManager')
+        self.achievementManager = self.generateGlobalObject(OTP_DO_ID_TOONTOWN_ACHIEVEMENT_MANAGER, 'TTAchievementManager')
+        print(self.achievementManager)

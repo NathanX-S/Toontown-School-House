@@ -344,6 +344,7 @@ from toontown.cogdominium import DistCogdoCrane/AI
 from toontown.cogdominium import DistCogdoCraneMoneyBag/AI
 from toontown.cogdominium import DistCogdoCraneCog/AI
 from toontown.spellbook import TTOffMagicWordManager/AI
+from toontown.achievements import TTAchievementManager/AI/UD
 
 typedef uint8 bool;
 
@@ -975,7 +976,7 @@ struct AchievementInProgress {
 }
 
 struct AchievementComplete {
-  uint32 achievementId
+  uint32 achievementId;
   int16/10 payload;
   uint32 timestamp;
 }
@@ -3866,3 +3867,6 @@ dclass TTOffMagicWordManager : DistributedObject {
   executeMagicWord(string, string, uint32[], blob, int8, int8, int16, uint32);
   generateResponse(string, string, blob, string, int8, int8, int16, uint32, string);
 };
+
+dclass TTAchievementManager : DistributedObject {
+}
