@@ -970,13 +970,9 @@ dclass DistributedAnimatedProp : DistributedObject {
   setState(string, int16) required broadcast ram;
 };
 
-struct AchievementInProgress {
+struct Achievement {
   uint32 achievementId;
-  int16/10 payload;
-}
-
-struct AchievementComplete {
-  uint32 achievementId;
+  uint8 status;
   int16/10 payload;
   uint32 timestamp;
 }
@@ -1169,8 +1165,7 @@ dclass DistributedToon : DistributedPlayer {
   setInstaKill(uint8) broadcast ownrecv ram;
   setRun() broadcast ownrecv ram;
   doTeleport(string hood);
-  setAchievementsInProgress(AchievementInProgress[] = []) ownrecv required db;
-  setAchievementsCompleted(AchievementComplete[] = []) ownrecv required db;
+  setAchievements(Achievement[] = []) ownrecv required db;
 };
 
 dclass DistributedCCharBase : DistributedObject {
