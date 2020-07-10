@@ -54,7 +54,7 @@ class NametagGroup:
         self.m_stomp_chat_flags = None
         self.m_chat_flags = 0
         self.m_page_number = 0
-        self.m_stomp_delay = 0.5
+        self.m_stomp_delay = 0.1
         self.m_chat_stomp = 0
 
         self.m_unique_name = 'nametag-%d' % NametagGroup._unique_index
