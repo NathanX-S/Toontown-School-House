@@ -323,13 +323,19 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         page.enter()
 
     def showPageArrows(self):
+        self.ignore('arrow_left')
+        self.ignore('arrow_right')
         if self.currPageIndex == len(self.pages) - 1:
+            self.accept('arrow_left', self.__pageChange, [-1])
             self.prevArrow.show()
             self.nextArrow.hide()
         else:
             self.prevArrow.show()
             self.nextArrow.show()
+            self.accept('arrow_right', self.__pageChange, [1])
+            self.accept('arrow_left', self.__pageChange, [-1])
         if self.currPageIndex == 0:
+            self.accept('arrow_right', self.__pageChange, [1])
             self.prevArrow.hide()
             self.nextArrow.show()
 
