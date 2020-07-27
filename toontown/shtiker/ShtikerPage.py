@@ -32,6 +32,9 @@ class ShtikerPage(DirectFrame, StateData.StateData):
     def setPageName(self, pageName):
         self.pageName = pageName
 
+    def getPageName(self):
+        return self.pageName
+
     def makePageWhite(self, item):
         white = Vec4(1, 1, 1, 1)
         self.book['image_color'] = white

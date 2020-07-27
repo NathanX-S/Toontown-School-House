@@ -355,18 +355,12 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         self.fishPage.setAvatar(self)
         self.fishPage.load()
         self.book.addPage(self.fishPage, pageName=TTLocalizer.FishPageTitle)
-        if base.wantKarts:
-            self.addKartPage()
-        if self.disguisePageFlag:
-            self.loadDisguisePages()
-        if self.sosPageFlag:
-            self.loadSosPages()
-        if self.gardenStarted:
-            self.loadGardenPages()
+        self.addKartPage()
+        self.loadDisguisePages()
+        self.loadSosPages()
+        self.loadGardenPages()
         self.addGolfPage()
         self.addEventsPage()
-        if WantNewsPage:
-            self.addNewsPage()
         self.wordPage = WordPage.WordPage()
         self.wordPage.load()
         self.book.addPage(self.wordPage, pageName=TTLocalizer.SpellbookPageTitle)
@@ -1824,11 +1818,6 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         self.eventsPage.load()
         self.book.addPage(self.eventsPage, pageName=TTLocalizer.EventsPageName)
         return
-
-    def addNewsPage(self):
-        self.newsPage = NewsPage.NewsPage()
-        self.newsPage.load()
-        self.book.addPage(self.newsPage, pageName=TTLocalizer.NewsPageName)
 
     def addTIPPage(self):
         self.tipPage = TIPPage.TIPPage()

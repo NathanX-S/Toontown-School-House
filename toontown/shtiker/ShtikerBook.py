@@ -8,7 +8,7 @@ from toontown.toonbase import TTLocalizer as TTL
 from toontown.effects import DistributedFireworkShow
 from toontown.parties import DistributedPartyFireworksActivity
 from direct.directnotify import DirectNotifyGlobal
-
+from collections import OrderedDict
 class ShtikerBook(DirectFrame, StateData.StateData):
     notify = DirectNotifyGlobal.directNotify.newCategory('ShtikerBook')
 
@@ -16,12 +16,15 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         DirectFrame.__init__(self, relief=None, sortOrder=DGG.BACKGROUND_SORT_INDEX)
         self.initialiseoptions(ShtikerBook)
         StateData.StateData.__init__(self, doneEvent)
-        self.pages = []
-        self.pageTabs = []
-        self.currPageTabIndex = None
+        self.pages = {}
+        self.lockedPages = []
+        self.pageTabs = {}
+        self.categoryTabs = {}
         self.pageTabFrame = DirectFrame(parent=self, relief=None, pos=(0.93, 1, 0.575), scale=1.25)
         self.pageTabFrame.hide()
+        self.currPage = None
         self.currPageIndex = None
+        self.currCategory = None
         self.entered = 0
         self.safeMode = 0
         self.__obscured = 0
@@ -29,29 +32,29 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         self.__isOpen = 0
         self.hide()
         self.setPos(0, 0, 0.1)
-        self.pageOrder = [TTL.OptionsPageTitle,
-         TTL.AchievePageTitle,
-         TTL.ShardPageTitle,
-         TTL.MapPageTitle,
-         TTL.InventoryPageTitle,
-         TTL.QuestPageToonTasks,
-         TTL.TrackPageShortTitle,
-         TTL.SuitPageTitle,
-         TTL.FishPageTitle,
-         TTL.KartPageTitle,
-         TTL.DisguisePageTitle,
-         TTL.NPCFriendPageTitle,
-         TTL.GardenPageTitle,
-         TTL.GolfPageTitle,
-         TTL.EventsPageName,
-         TTL.SpellbookPageTitle]
         sos_textures = loader.loadModel('phase_3.5/models/gui/sos_textures')
         stickerbook_gui = loader.loadModel('phase_3.5/models/gui/stickerbook_gui')
         inventory_icons = loader.loadModel('phase_3.5/models/gui/inventory_icons')
         playing_card = loader.loadModel('phase_3.5/models/gui/playingCard')
         golf_gui = loader.loadModel('phase_6/models/golf/golf_gui')
         party_stickerbook = loader.loadModel('phase_4/models/parties/partyStickerbook')
+        jar_gui = loader.loadModel('phase_3.5/models/gui/jar_gui')
+        cloud = loader.loadModel('phase_3.5/models/gui/cloud')
         self.button_bg = loader.loadModel('phase_3/models/gui/tt_m_gui_ups_panelBg')
+        self.categoryDefs = OrderedDict()
+        cat_defs = self.categoryDefs
+        cat_defs["Settings"] = [TTL.OptionsPageTitle]
+        cat_defs["Navigation"] = [TTL.ShardPageTitle, TTL.MapPageTitle]
+        cat_defs["Fighting"] = [TTL.InventoryPageTitle, TTL.QuestPageToonTasks, TTL.TrackPageShortTitle]
+        cat_defs["Cogs 'n' Rewards"] = [TTL.SuitPageTitle, TTL.DisguisePageTitle, TTL.NPCFriendPageTitle]
+        cat_defs["Activities"] = [TTL.FishPageTitle, TTL.KartPageTitle, TTL.GolfPageTitle, TTL.GardenPageTitle]
+        cat_defs["Misc."] = [TTL.EventsPageName, TTL.SpellbookPageTitle]
+        self.categoryIcons = {"Settings": [sos_textures.find('**/switch1')],
+         "Navigation": [sos_textures.find('**/compass')],
+         "Fighting": [inventory_icons.find('**/inventory_cake'), 7],
+         "Cogs 'n' Rewards": [sos_textures.find('**/gui_gear')],
+         "Activities": [sos_textures.find('**/kartIcon')],
+         "Misc.": [cloud.find('**/cloud')]}
         self.pageIcons = {TTL.OptionsPageTitle: [sos_textures.find('**/switch1')],
          TTL.ShardPageTitle: [sos_textures.find('**/district')],
          TTL.MapPageTitle: [sos_textures.find('**/teleportIcon')],
@@ -96,7 +99,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
             self.accept(ToontownGlobals.StickerBookHotkey, self.__close)
             self.accept(ToontownGlobals.OptionsPageHotkey, self.__close)
             self.pageTabFrame.show()
-        self.pages[self.currPageIndex].enter()
+        self.currPage.enter()
 
     def exit(self):
         if not self.entered:
@@ -104,7 +107,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         self.entered = 0
         messenger.send('stickerBookExited')
         base.playSfx(self.closeSound)
-        self.pages[self.currPageIndex].exit()
+        self.currPage.exit()
         NametagGlobals.setMin2dAlpha(self.oldMin2dAlpha)
         NametagGlobals.setMax2dAlpha(self.oldMax2dAlpha)
         base.setCellsAvailable([base.rightCells[0]], 1)
@@ -137,6 +140,10 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         self.openSound = base.loader.loadSfx('phase_3.5/audio/sfx/GUI_stickerbook_open.ogg')
         self.closeSound = base.loader.loadSfx('phase_3.5/audio/sfx/GUI_stickerbook_delete.ogg')
         self.pageSound = base.loader.loadSfx('phase_3.5/audio/sfx/GUI_stickerbook_turn.ogg')
+        i = 0
+        for cat in self.categoryDefs.keys():
+            self.addCategoryTab(i, cat)
+            i += 1
         return
 
     def unload(self):
@@ -150,38 +157,30 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         del self.nextArrow
         self.prevArrow.destroy()
         del self.prevArrow
-        for page in self.pages:
+        for page in self.pages.values():
             page.unload()
 
         del self.pages
-        for pageTab in self.pageTabs:
+        for pageTab in self.pageTabs.values():
             pageTab.destroy()
 
         del self.pageTabs
-        del self.currPageTabIndex
         del self.openSound
         del self.closeSound
         del self.pageSound
 
     def addPage(self, page, pageName = 'Page'):
-        if pageName not in self.pageOrder:
-            self.notify.error('Trying to add page %s in the ShtickerBook. Page not listed in the order.' % pageName)
-            return
-        pageIndex = 0
-        if len(self.pages):
-            self.pages.append(page)
-            pageIndex = len(self.pages) - 1
-        else:
-            self.pages.append(page)
-            pageIndex = len(self.pages) - 1
+        self.pages[pageName] = page
         page.setBook(self)
         page.setPageName(pageName)
         page.reparentTo(self)
-        self.addPageTab(page, pageIndex, pageName)
 
-    def addPageTab(self, page, pageIndex, pageName = 'Page'):
+    def addPageTab(self, catName, pageName = 'Page'):
         tabIndex = len(self.pageTabs)
-
+        categoryDef = self.categoryDefs[catName]
+        catIndex = self.categoryDefs.keys().index(catName)
+        pageIndex = catIndex + categoryDef.index(pageName)
+        page = self.pages[pageName]
         def goToPage():
             messenger.send('wakeup')
             base.playSfx(self.pageSound)
@@ -212,35 +211,62 @@ class ShtikerBook(DirectFrame, StateData.StateData):
          text_pos=(1, -0.2), text_scale=TTL.SBpageTab,
          text_fg=(1, 1, 1, 1), text_shadow=(0, 0, 0, 1),
          image=self.button_bg, image_scale=1.15, geom=iconGeom, geom_scale=iconScale, geom_color=iconColor,
-         pos=(0, 0, yOffset), scale=0.06, command=buttonPressedCommand, extraArgs=extraArgs)
-        self.pageTabs.insert(pageIndex, pageTab)
+         pos=(0.075, 0, yOffset), scale=0.06, command=buttonPressedCommand, extraArgs=extraArgs)
+        self.pageTabs[pageName] = pageTab
         return
 
     def setPage(self, page, enterPage = True):
-        if self.currPageIndex is not None:
-            self.pages[self.currPageIndex].exit()
-        self.currPageIndex = self.pages.index(page)
-        self.setPageTabIndex(self.currPageIndex)
+        if self.currPage is not None:
+            self.currPage.exit()
+        self.currPage = self.pages[page.getPageName()]
         if enterPage:
             self.showPageArrows()
             page.enter()
         return
 
-    def setPageTabIndex(self, pageTabIndex):
-        if self.currPageTabIndex is not None and pageTabIndex != self.currPageTabIndex:
-            #self.pageTabs[self.currPageTabIndex]['relief'] = DGG.RAISED
-            return
-        self.currPageTabIndex = pageTabIndex
-        #self.pageTabs[self.currPageTabIndex]['relief'] = DGG.SUNKEN
-        return
-
     def isOnPage(self, page):
-        result = False
-        if self.currPageIndex is not None:
-            curPage = self.pages[self.currPageIndex]
-            if curPage == page:
-                result = True
-        return result
+        return page == self.currPage
+
+    def openCategory(self, catName):
+        if self.currCategory:
+            self.categoryTabs[self.currCategory]['image_color'] = Vec4(1)
+        self.categoryTabs[catName]['image_color'] = Vec4(0.82, 0.71, 0.11, 1)
+        for pageName, pageTab in self.pageTabs.items():
+            pageTab.destroy()
+        pageNames = self.categoryDefs[catName]
+        for pageName in pageNames:
+            if pageName in self.lockedPages:
+                continue
+            self.addPageTab(catName, pageName)
+        self.currCategory = catName
+
+    def addCategoryTab(self, catIndex, catName = 'Category'):
+        yOffset = (-0.065 * catIndex) + 0.0875
+        iconGeom = None
+        iconImage = None
+        iconScale = 1
+        iconColor = Vec4(1)
+        buttonPressedCommand = self.openCategory
+        extraArgs = [catName]
+        catItem = self.categoryIcons[catName]
+        iconGeom = catItem[0]
+        if len(catItem) > 1:
+            iconScale = catItem[1]
+        if len(catItem) > 2:
+            iconColor = catItem[2]
+        if catName == TTL.OptionsPageTitle:
+            catName = TTL.OptionsTabTitle
+        categoryTab = DirectButton(parent=self.pageTabFrame, relief=None,
+         frameSize=(-0.575, 0.575, -0.575, 0.575),
+         borderWidth=(0.05, 0.05),
+         text=('', '', catName, ''),
+         text_align=TextNode.ALeft,
+         text_pos=(1.75, -0.2), text_scale=TTL.SBpageTab,
+         text_fg=(1, 1, 1, 1), text_shadow=(0, 0, 0, 1),
+         image=self.button_bg, image_scale=1.15, geom=iconGeom, geom_scale=iconScale, geom_color=iconColor,
+         pos=(0, 0, yOffset), scale=0.06, command=buttonPressedCommand, extraArgs=extraArgs)
+        self.categoryTabs[catName] = categoryTab
+        return
 
     def obscureButton(self, obscured):
         self.__obscured = obscured
@@ -281,9 +307,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
     def __open(self):
         messenger.send('enterStickerBook')
         if not localAvatar.getGardenStarted():
-            for tab in self.pageTabs:
-                if tab['text'][2] == TTL.GardenPageTitle:
-                    tab.hide()
+            self.lockedPages.append(TTL.GardenPageTitle)
 
     def __close(self):
         base.playSfx(self.closeSound)
@@ -295,7 +319,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         self.__close()
 
     def __pageDone(self):
-        page = self.pages[self.currPageIndex]
+        page = self.currPage
         pageDoneStatus = page.getDoneStatus()
         if pageDoneStatus:
             if pageDoneStatus['mode'] == 'close':
@@ -307,14 +331,13 @@ class ShtikerBook(DirectFrame, StateData.StateData):
     def __pageChange(self, offset):
         messenger.send('wakeup')
         base.playSfx(self.pageSound)
-        self.pages[self.currPageIndex].exit()
+        self.currPage.exit()
         self.currPageIndex = self.currPageIndex + offset
         messenger.send('stickerBookPageChange-' + str(self.currPageIndex))
         self.currPageIndex = max(self.currPageIndex, 0)
-        self.currPageIndex = min(self.currPageIndex, len(self.pages) - 1)
-        self.setPageTabIndex(self.currPageIndex)
+        self.currPageIndex = min(self.currPageIndex, len(self.categoryDefs[self.currCategory]) - 1)
         self.showPageArrows()
-        page = self.pages[self.currPageIndex]
+        page = self.categoryDefs[self.currCategory][self.currPageIndex]
         page.enter()
 
     def showPageArrows(self):
